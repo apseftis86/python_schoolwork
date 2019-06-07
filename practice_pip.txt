@@ -1,0 +1,20 @@
+pip install - will install whatever module you are adding to pip
+
+pip list - will list all of your installed packages in whatever environment you are in
+deactivate just deactivates your virtual environment
+
+pip freeze - This is one that I have never seen before since I havent done a lot of work
+with pip and python but it is really cool since it shows you the list of installed packages 
+in the "requirements" format so when you do pip install -r requirements.txt it can install the 
+modules you need.
+
+pip freeze > requirements.txt will create a file that includes the requirements (installed packages)
+for your environment.
+
+pip uninstall - removes the package
+
+pip show - will show information about the packages that you have listed. name, version, summary etc
+
+pip search - whatever word you use in this one it will show you the PyPI packages that have that
+name included.
+
