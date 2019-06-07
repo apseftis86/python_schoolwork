@@ -1,6 +1,7 @@
 pip install - will install whatever module you are adding to pip
 
 pip list - will list all of your installed packages in whatever environment you are in
+
 deactivate just deactivates your virtual environment
 
 pip freeze - This is one that I have never seen before since I havent done a lot of work
