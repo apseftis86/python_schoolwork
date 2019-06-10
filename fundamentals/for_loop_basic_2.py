@@ -87,7 +87,11 @@ def ultimate_analysis(list):
 print(ultimate_analysis([37,2,1,-9]))
 
 def reverse_list(list):
-    for x in range(len(list)):
-        list[x] = list[x-len(list)]
+    myrange = int(len(list) / 2)
+    for x in range(myrange):
+        temp = list[x]
+        list[x] = list[len(list)-1-x]
+        list[len(list)-1-x] = temp
     return list
+
 print(reverse_list([37,2,1,-9]))
