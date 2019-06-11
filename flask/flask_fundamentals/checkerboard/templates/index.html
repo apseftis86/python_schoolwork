@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="wrapper">
+        {% for y in range(y_rows) %}
+        {% if y % 2 == 1 %}
+        <div class="checker_row">
+        {% for x in range(x_rows) %}
+        <div class="checkers"
+             {% if x % 2 == 0 and color1 %}
+             style="background-color: {{ color1 }}"
+             {% else %}
+             style="background-color: {{ color2 }}"
+            {% endif %}
+             ></div>
+        {% endfor %}
+        </div>
+        {% else %}
+         <div class="checker_row">
+        {% for x in range(x_rows) %}
+        <div class="checkers"
+             {% if x % 2 == 1 and color1 %}
+             style="background-color: {{ color1 }}"
+             {% else %}
+             style="background-color: {{ color2 }}"
+            {% endif %}
+             ></div>        {% endfor %}
+         </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
