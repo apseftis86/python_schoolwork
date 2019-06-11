@@ -15,7 +15,7 @@ def checker_x_y(x, y):
 
 @app.route('/<x>/<y>/<color1>/<color2>')
 def checker_x_y_colors(x, y, color1, color2):
-    return render_template("index.html", x_rows=int(x), y_rows=int(y), color1=color1, color2=color2)
+    return render_template("index.html", x_rows=int(x), y_rows=int(y), colors=True, color1=color1, color2=color2)
 
 if __name__=="__main__":
     app.run(debug=True)

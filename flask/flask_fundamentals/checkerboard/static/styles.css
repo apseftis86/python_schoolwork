@@ -13,12 +13,11 @@
     display: inline-block;
     height: 50px;
     width: 50px;
-    background-color: red;
 }
 
-.checker_row:nth-child(odd) > .checkers:nth-child(even) {
-    background-color: black;
+.color1 {
+    background-color: red;
 }
-.checker_row:nth-child(even) > .checkers:nth-child(odd) {
+.color2 {
     background-color: black;
 }
