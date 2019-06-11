@@ -1,15 +1,12 @@
 def selection_sort(lst):
-    index = 0
-    min_ind = 0
-    while index < len(lst):
-        min = lst[index]
-        min_idx = index
-        for x in range(index, len(lst)):
+    for i in range(len(lst)):
+        min = lst[i]
+        min_idx = i
+        for x in range(i, len(lst)):
             if lst[x] < min:
                 min = lst[x]
-                min_ind = x
-        if lst[index] != min:
-            lst[index], lst[min_ind] = lst[min_ind], lst[index]
-        index += 1
-    return lst 
-print(selection_sort([5, 4, 2, 9, 8, 7, 6, 3, 0, 1]))
+                min_idx = x
+        if lst[i] != min:
+            lst[i], lst[min_idx] = lst[min_idx], lst[i]
+    return lst
+print(selection_sort([5, 4, 3, 9, 8, 7, 6, 2, 0, 1]))
