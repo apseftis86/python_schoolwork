@@ -6,12 +6,13 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     {% if box_color %}
-    <style>
-    .box {
-        background-color: {{box_color}} !important;
-    }
+        <style>
+        .box {
+            background-color: {{box_color}} !important;
+        }
+        </style>
     {% endif %}
-    </style>
+
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
 
     <title>Document</title>
