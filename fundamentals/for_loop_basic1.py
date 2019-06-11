@@ -9,7 +9,7 @@ while count <= 1000:
     count +=5
 
 # counting dojo way
-for x in range (1, 101):
+for x in range(1, 101):
     if x % 5 == 0:
         if x % 10 == 0:
             print('coding dojo')
@@ -21,7 +21,7 @@ for x in range (1, 101):
 
 # whoa that suckers huge
 sum = 0
-for x in range (1, 500000, 2):
+for x in range(1, 500000, 2):
     sum = sum + x
 print(sum)
 
