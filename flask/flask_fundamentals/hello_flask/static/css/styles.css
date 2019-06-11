@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+#wrapper {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+
+.box {
+    display: inline-block;
+    background-color: cornflowerblue;
+    border: 5px solid black;
+    height: 250px;
+    width: 250px;
+}

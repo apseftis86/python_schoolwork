@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hello Flask</h1>
+    <p>Phrase: {{ phrase }}</p>
+    <p>Times: {{ times }}</p>
+
+{% for x in range(times): %}
+    <p>{{ phrase }}</p>
+{% endfor %}
+
+{% if phrase == "hello" %}
+    <p>The phrase says hello</p>
+{% endif %}
+</body>
+</html>
