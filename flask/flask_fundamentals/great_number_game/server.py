@@ -21,7 +21,7 @@ def guessing():
         session['response'] = 'Too Low'
         session['response_box_color'] = 'response_box_orange'
     elif user_guess == session['random_number']:
-        session['response'] = 'YOU DID IT'
+        session['guessed'] = True
         session['response_box_color'] = 'response_box_green'
     return redirect('/')
 @app.route('/reset')

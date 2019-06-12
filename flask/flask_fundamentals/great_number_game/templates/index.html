@@ -18,12 +18,15 @@
     <h5>Take a guess</h5>
       {% if session['response'] %}
       <div class="response_box {{session['response_box_color']}} mx-auto my-5">
-        <p>{{session['response'].capitalize()}}</p>
-        {% if session['response'] == 'YOU DID IT' %}
+        {% if session['guessed'] %}
+        <p>{{session['random_number']}} was the number!</p>
         <form action="/reset">
           <button class="btn btn-sm btn-light mx-auto my-2">Play again</button>
         </form>
+        {% else %}
+        <p>{{session['response']}}</p>
         {% endif %}
+
 
       </div>
       {% endif %}
