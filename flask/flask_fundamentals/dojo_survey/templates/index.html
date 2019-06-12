@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="wrapper" class="p-3">
+      <div class="form_container">
+        <h3>Submit a Form</h3>
+        <form action='/result' method='post'>
+          <label><b>Name:</b> <input type='text' name='name' class="form-control w-50"></label>
+          <label><b>Location:</b> <input type='text' name='location' class="form-control w-50"></label>
+          <label><b>Level of Coding Knowledge:</b>
+            <input type="radio" name="level" value="novice" class="mx-2">Novice
+            <input type="radio" name="level" value="intermediate" class="mx-2">Intermediate
+            <input type="radio" name="level" value="expert" class="mx-2">Expert
+          </label>
+          <label>
+            <b>Languages Known:</b>
+            <input type="checkbox" name="known_languages[]" class="mx-2" value="JavaScript">Javascript
+            <input type="checkbox" name="known_languages[]" class="mx-2" value="Python">Python
+            <input type="checkbox" name="known_languages[]" class="mx-2" value="Ruby">Ruby
+            <input type="checkbox" name="known_languages[]" class="mx-2" value="HTML">HTML
+            <input type="checkbox" name="known_languages[]" class="mx-2" value="CSS">CSS
+          </label>
+          <label>
+            <b>Favorite Language:</b>
+            <select name="fave_language" class="form-control w-50">
+              <option value="" autofocus>Choose a Language</option>
+              <option value="JavaScript">Javascript</option>
+              <option value="Python">Python</option>
+              <option value="Ruby">Ruby</option>
+              <option value="HTML">HTML</option>
+              <option value="CSS">CSS</option>
+            </select>
+          </label>
+          <label>
+            <b>Comment(optional):</b>
+            <textarea rows="3" name="comment" class="form-control w-75"></textarea></label>
+          <div>
+            <button class="btn btn-primary my-3">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

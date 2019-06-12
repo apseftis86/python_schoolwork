@@ -1,0 +1,17 @@
+#wrapper {
+    padding: 25px;
+}
+
+.form_container {
+    width: 700px;
+    border: 2px solid black;
+    padding: 25px;
+}
+
+h2 {
+    text-decoration: underline;
+}
+label {
+    display: block !important;
+    margin: 10px 0;
+}
