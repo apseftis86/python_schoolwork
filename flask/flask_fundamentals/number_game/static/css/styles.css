@@ -1,0 +1,24 @@
+body {
+    background-color: whitesmoke;
+}
+.response_box {
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    width: 300px;
+    color: white;
+    border: 2px solid black;
+    background-color: green;
+}
+.response_box_red {
+    background-color: red;
+}
+.response_box_orange {
+    background-color: orange;
+}
+.response_box_green {
+    background-color: green;
+}
