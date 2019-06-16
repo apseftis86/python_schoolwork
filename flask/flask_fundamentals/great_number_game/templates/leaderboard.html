@@ -21,8 +21,9 @@
             <button class="btn btn-sm btn-success">Submit</button>
         </form>
       </span>
-      {% else %}
-      <b>Game still in progress...</b>
+      {% endif %}
+      {% if not session['guessed'] %}
+      <b>Game still in progress</b>
       {% endif %}
       {% if leaders %}
       <table class="table table-sm table-bordered w-50 mt-4">
