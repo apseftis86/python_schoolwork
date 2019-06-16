@@ -16,13 +16,14 @@
       <span class="mx-2">Ninja Gold</span>
       <img src="{{ url_for('static', filename='img/coins.png') }}">
   </h1>
-  <div class="p-3">
-      <span id="bank">
+  <div class="text-center mb-3">
+    <h5>Earn 200 gold in 15 moves to win...</h5>
+    <h5>If you do not reach your goal or go lower than -100 gold... you lose.</h5>
+        <span id="bank">
           <img src="{{ url_for('static', filename='img/rich.png') }}">
           <b>Gold: {{gold}}</b>
       </span>
   </div>
-  <h2 class="text-center my-2">Choose Activity: </h2>
   <div class="choices">
       <div class="choice">
           <h6>Farm</h6>
@@ -30,6 +31,8 @@
           <p>(earns 10-20 gold)</p>
           <form action="process-money" method="post">
               <input type="hidden" name="location" value="farm">
+              <input type="hidden" name="lowrange" value="10">
+              <input type="hidden" name="highrange" value="20">
               <button class="btn btn-primary btn-sm">Find Gold!</button>
           </form>
       </div>
@@ -39,6 +42,8 @@
           <p>(earns 2-5 gold)</p>
           <form action="process-money" method="post">
               <input type="hidden" name="location" value="house">
+              <input type="hidden" name="lowrange" value="2">
+              <input type="hidden" name="highrange" value="5">
               <button class="btn btn-primary btn-sm">Find Gold!</button>
           </form>
       </div>
@@ -48,6 +53,8 @@
           <p>(earns 5-10 gold)</p>
           <form action="process-money" method="post">
               <input type="hidden" name="location" value="cave">
+              <input type="hidden" name="lowrange" value="5">
+              <input type="hidden" name="highrange" value="10"  >
               <button class="btn btn-primary btn-sm">Find Gold!</button>
           </form>
       </div>
@@ -57,6 +64,8 @@
           <p>(earns/takes 0-50 gold)</p>
           <form action="process-money" method="post">
               <input type="hidden" name="location" value="casino">
+              <input type="hidden" name="lowrange" value="-50">
+              <input type="hidden" name="highrange" value="50">
               <button class="btn btn-primary btn-sm">Find Gold!</button>
           </form>
       </div>
@@ -64,7 +73,7 @@
   <div class="p-3">
       <h4>Activities:</h4>
       <div class="history mt-3">
-          {% for activity in history %}
+          {% for activity in history|sort(attribute='timestamp', reverse=True) %}
           {% if activity['type'] == 'loss' %}
           <p class="text-danger">You entered a casino and lost {{activity['amount']}}... Oh no! ({{activity['timestamp']}})</p>
           {% elif activity['type'] == 'gain' %}
@@ -75,8 +84,14 @@
           {% endfor %}
       </div>
   </div>
-  <form action="reset">
-      <button class="btn btn-sm btn-danger ml-5">Reset Game</button>
-  </form>
+  {% if session['over'] %}
+  <div class="text-center">
+      <h3>{{session['response']}}</h3>
+      <form action="reset">
+          <button class="btn btn-sm btn-danger">Reset Game</button>
+      </form>
+  </div>
+  {% endif %}
+
   </body>
 </html>

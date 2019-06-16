@@ -7,25 +7,34 @@ app.secret_key = 'keep it secret, keep it safe'  # set a secret key for security
 
 @app.route('/')
 def index():
-    if 'gold' not in session:
-        session['gold'] = 0
     if 'activities' not in session:
         session['activities'] = []
+        session['choices'] = 0
+        session['over'] = False
+    if 'gold' not in session:
+        session['gold'] = 0
+    else:
+        if session['choices'] < 15:
+            if session['gold'] >= 200:
+                session['over'] = True
+                session['response'] = 'You win!'
+            elif session['gold'] <= -100:
+                session['over'] = True
+                session['response'] = 'You lose...'
+        else:
+            session['over'] = True
+            session['response'] = 'You lose...'
     history = session['activities']
     return render_template('index.html', gold=session['gold'], history=history)
 
 
 @app.route('/process-money', methods=['POST'])
 def process_money():
+    if session['over']:
+        return redirect('/')
+    session['choices'] += 1
     location = request.form['location']
-    if location == 'casino':
-        processing = random.randint(-50, 50)
-    elif location == 'farm':
-        processing = random.randint(10, 20)
-    elif location == 'cave':
-        processing = random.randint(5, 10)
-    else:
-        processing = random.randint(2, 5)
+    processing = random.randint(int(request.form['lowrange']), int(request.form['highrange']))
     session['gold'] = int(session['gold']) + processing
     if processing < 0:
         action = 'loss'
