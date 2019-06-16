@@ -14,27 +14,52 @@
     <h1 class="jumbotron jumbotron-fluid bg-dark text-white">
       Welcome to the Great Number Game
     </h1>
+    {% if not session['started'] %}
+    <h4>Before we begin... What difficulty Level?</h4>
+    <form action="/difficulty" method="post">
+      <select name="difficulty" class="form-control w-25 mx-auto">
+        <option value="infinite">Infinite</option>
+        <option value="five">5 Attempts</option>
+      </select>
+      <button class="btn btn-sm btn-primary my-2">Submit</button>
+    </form>
+    {% endif %}
+    {% if session['started'] %}
     <h4>I am thinking of a number between 1-100</h4>
     <h5>Take a guess</h5>
       {% if session['response'] %}
-      <div class="response_box {{session['response_box_color']}} mx-auto my-5">
+      <div class="response_box {{session['response_box_color']}} mx-auto my-2">
         {% if session['guessed'] %}
         <p>{{session['random_number']}} was the number!</p>
-        <form action="/reset">
+        <form action="/reset" method="post">
           <button class="btn btn-sm btn-light mx-auto my-2">Play again</button>
         </form>
         {% else %}
         <p>{{session['response']}}</p>
         {% endif %}
-
-
       </div>
-      {% endif %}
+      {% if session['guessed'] %}
+    <a href="leaderboard" class="mb-4">Visit Leaderboard</a>
+      {% else %}
+    {% endif %}
+    {% endif %}
+    {% if session['started'] and not session['guessed'] %}
     <div class="d-flex flex-column text-center">
-      <form action="/guess" method="post">
+      <form action="/guess" method="post" autocomplete="off">
         <input type="text" name="guess" class="m-auto form-control w-25">
         <button class="btn btn-sm btn-success mx-auto my-2">Submit</button>
       </form>
     </div>
+    {% endif %}
+    <hr>
+    {% if session['difficulty'] == 'infinite' %}
+    <b>Guesses: {{attempts}}</b>
+    {% else %}
+    <b>Guesses Remaining: {{5 - attempts}}</b>
+    {% endif %}
+    <form action="/reset" method="post">
+      <button class="btn btn-sm btn-danger">Reset Game</button>
+    </form>
+  {% endif %}
   </body>
 </html>
