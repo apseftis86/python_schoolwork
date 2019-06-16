@@ -1,0 +1,39 @@
+img {
+    height: 50px;
+    width: 50px;
+}
+
+#bank img {
+    height: 75px;
+    width: 75px;
+}
+
+.choices {
+    display: flex;
+    justify-content: space-around;
+}
+.choice {
+    padding: 10px;
+    text-align: center;
+    border: 3px solid black;
+    height: 220px;
+    width: 220px;
+}
+.choice h6 {
+    font-weight: bold;
+    font-size: 18px;
+}
+.choice img {
+    margin: auto;
+    height: 100px;
+    width: 100px;
+}
+.history {
+    height: 300px;
+    width: 100%;
+    overflow-x: scroll;
+    border: 3px solid black;
+}
+.history p {
+    font-size: 20px;
+}

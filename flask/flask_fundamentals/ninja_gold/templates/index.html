@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+  </head>
+  <body>
+  <h1 class="p-3 bg-dark text-light text-center">
+      <img src="{{ url_for('static', filename='img/coins.png') }}">
+      <span class="mx-2">Ninja Gold</span>
+      <img src="{{ url_for('static', filename='img/coins.png') }}">
+  </h1>
+  <div class="p-3">
+      <span id="bank">
+          <img src="{{ url_for('static', filename='img/rich.png') }}">
+          <b>Gold: {{gold}}</b>
+      </span>
+  </div>
+  <h2 class="text-center my-2">Choose Activity: </h2>
+  <div class="choices">
+      <div class="choice">
+          <h6>Farm</h6>
+          <img src="{{ url_for('static', filename='img/farm.png') }}">
+          <p>(earns 10-20 gold)</p>
+          <form action="process-money" method="post">
+              <input type="hidden" name="location" value="farm">
+              <button class="btn btn-primary btn-sm">Find Gold!</button>
+          </form>
+      </div>
+      <div class="choice">
+          <h6>House</h6>
+          <img src="{{ url_for('static', filename='img/house.png') }}">
+          <p>(earns 2-5 gold)</p>
+          <form action="process-money" method="post">
+              <input type="hidden" name="location" value="house">
+              <button class="btn btn-primary btn-sm">Find Gold!</button>
+          </form>
+      </div>
+      <div class="choice">
+          <h6>Cave</h6>
+          <img src="{{ url_for('static', filename='img/cave.jpg') }}">
+          <p>(earns 5-10 gold)</p>
+          <form action="process-money" method="post">
+              <input type="hidden" name="location" value="cave">
+              <button class="btn btn-primary btn-sm">Find Gold!</button>
+          </form>
+      </div>
+      <div class="choice">
+          <h6>Casino</h6>
+          <img src="{{ url_for('static', filename='img/casino.jpg') }}">
+          <p>(earns/takes 0-50 gold)</p>
+          <form action="process-money" method="post">
+              <input type="hidden" name="location" value="casino">
+              <button class="btn btn-primary btn-sm">Find Gold!</button>
+          </form>
+      </div>
+  </div>
+  <div class="p-3">
+      <h4>Activities:</h4>
+      <div class="history mt-3">
+          {% for activity in history %}
+          {% if activity['type'] == 'loss' %}
+          <p class="text-danger">You entered a casino and lost {{activity['amount']}}... Oh no! ({{activity['timestamp']}})</p>
+          {% elif activity['type'] == 'gain' %}
+          <p class="text-success">You earned {{activity['amount']}} from a {{activity['location']}}!  ({{activity['timestamp']}})</p>
+          {% else %}
+          <p>You entered a casino but did not lose/gain any money... ({{activity['timestamp']}})</p>
+          {% endif %}
+          {% endfor %}
+      </div>
+  </div>
+  <form action="reset">
+      <button class="btn btn-sm btn-danger ml-5">Reset Game</button>
+  </form>
+  </body>
+</html>
