@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+  <div class="bg-dark text-light d-flex justify-content-between align-items-center p-3">
+      <h4>Admin Dashboard</h4>
+      <span class="float-right">
+          <a href="/users" class="text-light"><i class="fas fa-home fa-2x"></i></a>
+      </span>
+  </div>
+  <div class="container p-5">
+    {% if user %}
+    <h3>Edit User {{user['id']}}</h3>
+    <form action="/users/{{user['id']}}/edit" method="post" class="mt-4">
+      <div class="mb-2">
+        <label for="first_name">First Name: </label>
+        <input id="first_name" name="first_name" type="text" value="{{user['first_name']}}" class="form-control w-25" required>
+      </div>
+      <div class="mb-2">
+        <label for="last_name">Last Name: </label>
+        <input id="last_name" name="last_name"type="text" value="{{user['last_name']}}" class="form-control w-25" required>
+      </div>
+      <div class="mb-2">
+        <label for="email">Email: </label>
+        <input id="email" name="email"type="text" value="{{user['email']}}" class="form-control w-25" required>
+      </div>
+      <div class="mb-2">
+        <label for="description">Description: </label>
+        <textarea id="description" name="description" rows=5 class="form-control w-50" required>{{user['description']}}</textarea>
+      </div>
+      {% else %}
+      <h3>Add User</h3>
+      <form action="/users/new" method="post" class="mt-4">
+        <div class="mb-2">
+        <label for="new_first_name">First Name: </label>
+        <input id="new_first_name" name="first_name" type="text" class="form-control w-25" required>
+      </div>
+      <div class="mb-2">
+        <label for="new_last_name">Last Name: </label>
+        <input id="new_last_name" name="last_name"type="text" class="form-control w-25" required>
+      </div>
+      <div class="mb-2">
+        <label for="new_email">Email: </label>
+        <input id="new_email" name="email"type="text" class="form-control w-25" required>
+      </div>
+      <div class="mb-2">
+        <label for="new_description">Description: </label>
+        <textarea id="new_description" name="description" rows=5 class="form-control w-50" required></textarea>
+      </div>
+      {% endif %}
+      {% if user['id'] %}
+      <div class="mt-5 text-center">
+        <button class="btn btn-sm btn-primary shadow d-block mx-auto mb-3">Update</button>
+        <a href="/users/{{user['id']}}">Show User</a>
+      </div>
+      {% else %}
+      <div class="mt-5">
+        <button class="btn btn-sm btn-primary shadow d-block mx-auto mb-3">Add User</button>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+</body>
+</html>

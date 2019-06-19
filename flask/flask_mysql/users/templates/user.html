@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="bg-dark text-light d-flex justify-content-between align-items-center p-3">
+        <h4>Admin Dashboard</h4>
+        <span class="float-right">
+            <a href="/users" class="text-light"><i class="fas fa-home fa-2x"></i></a>
+        </span>
+    </div>
+    <div class="container p-5">
+        <h3>User {{user['id']}}</h3>
+        <div class="card mt-4 w-50">
+            <div class="card-header">
+                <span>Full Name: {{user['first_name']}} {{user['last_name']}}</span>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Email: {{user['email']}}</li>
+                <li class="list-group-item">Description: {{user['description']}}</li>
+                <li class="list-group-item">Created On: {{user['created_at'].strftime('%B %d, %Y')}}</li>
+                {% if user['updated_at'] %}
+                <li class="list-group-item">Last Updated On: {{user['updated_at'].strftime('%B %d, %Y at %r')}}</li>
+                {% else %}
+                <li class="list-group-item">Last Updated On: null</li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="mt-5">
+            <a href="/users/{{user['id']}}/edit">Edit</a> |
+            <a href="/users/{{user['id']}}/destroy">Delete</a>
+        </div>
+    </div>
+</body>
+</html>
