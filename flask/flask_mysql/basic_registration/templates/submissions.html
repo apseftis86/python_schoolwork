@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Document</title>
+  </head>
+  <body>
+    <h3 class="p-3 bg-dark text-light"><i class="fas fa-user-ninja mr-3"></i>Dojo Survey</h3>
+    <div class="container p-2">
+      <h5>All Submissions to Date</h5>
+      <table class="table-sm table-striped table-bordered">
+        <thead>
+          <th>Name</th>
+          <th>Dojo</th>
+          <th>Language</th>
+          <th>Comment</th>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{user['name']}}</td>
+            <td>{{user['location']}}</td>
+            <td>{{user['language']}}</td>
+            <td>{{user['comment']}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <form action="/">
+        <button class="btn btn-sm btn-primary my-3">Submit New Form</button>
+      </form>
+    </div>
