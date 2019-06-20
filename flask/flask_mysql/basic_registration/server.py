@@ -17,30 +17,6 @@ def index():
         return redirect('/dashboard')
     return render_template('login.html')
 
-@app.route('/dashboard')
-def success():
-    if 'userid' not in session:
-        return redirect('/')
-    user_mysql = connectToMySQL('dojo_tweets')
-    tweet_mysql = connectToMySQL('dojo_tweets')
-    follower_mysql = connectToMySQL('dojo_tweets')
-    user = user_mysql.query_db(f"SELECT first_name,last_name, email, "
-                               f"last_login from users where id = {session['userid']}")
-    print(user[0])
-    following_tweets = follower_mysql.query_db(f"SELECT tweets.id as id, tweets.content as content, tweets.created_at as created_at, tweets.updated_at as updated_at, "
-                                               f"count(tweet_likes.id) as likes, users.first_name as first_name, users.last_name as last_name from tweets "
-                                               f"LEFT JOIN tweet_likes on tweet_likes.tweet_id = tweets.id "
-                                        f"LEFT JOIN following on following.following_user_id = tweets.user_id "
-                                        f"LEFT JOIN users on users.id = following.following_user_id where following.primary_user_id = {session['userid']} GROUP by (tweets.id)")
-    liked_tweets = connectToMySQL('dojo_tweets')
-    my_liked_tweets = liked_tweets.query_db(f"SELECT * from tweet_likes where liked_user_id = {session['userid']}")
-    user_tweets = tweet_mysql.query_db(f"SELECT * from tweets where user_id = {session['userid']}")
-    print(my_liked_tweets)
-    for tweet in following_tweets:
-        for my_liked in my_liked_tweets:
-            if tweet['id'] == my_liked['tweet_id']:
-                tweet['liked_by_me'] = True
-    return render_template('dashboard.html', user=user[0], tweets=user_tweets, following_tweets=following_tweets)
 
 @app.route('/register', methods=['POST'])
 def register_user():
@@ -75,9 +51,10 @@ def register_user():
             "e": request.form['email'],
             "p": bcrypt.generate_password_hash(request.form['password']),
         }
-        user_added = mysql.query_db(query, data)
+        mysql.query_db(query, data)
         flash('Successfully added!', 'success')
     return redirect('/')
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -110,6 +87,33 @@ def login():
         return redirect('/')
     return redirect('/')
 
+
+@app.route('/dashboard')
+def success():
+    if 'userid' not in session:
+        return redirect('/')
+    user_mysql = connectToMySQL('dojo_tweets')
+    tweet_mysql = connectToMySQL('dojo_tweets')
+    follower_mysql = connectToMySQL('dojo_tweets')
+    user = user_mysql.query_db(f"SELECT first_name,last_name, email, "
+                               f"last_login from users where id = {session['userid']}")
+    print(user[0])
+    following_tweets = follower_mysql.query_db(f"SELECT tweets.id as id, tweets.content as content, tweets.created_at as created_at, tweets.updated_at as updated_at, "
+                                               f"count(tweet_likes.id) as likes, users.first_name as first_name, users.last_name as last_name from tweets "
+                                               f"LEFT JOIN tweet_likes on tweet_likes.tweet_id = tweets.id "
+                                        f"LEFT JOIN following on following.following_user_id = tweets.user_id "
+                                        f"LEFT JOIN users on users.id = following.following_user_id where following.primary_user_id = {session['userid']} GROUP by (tweets.id)")
+    liked_tweets = connectToMySQL('dojo_tweets')
+    my_liked_tweets = liked_tweets.query_db(f"SELECT * from tweet_likes where liked_user_id = {session['userid']}")
+    user_tweets = tweet_mysql.query_db(f"SELECT * from tweets where user_id = {session['userid']}")
+    print(my_liked_tweets)
+    for tweet in following_tweets:
+        for my_liked in my_liked_tweets:
+            if tweet['id'] == my_liked['tweet_id']:
+                tweet['liked_by_me'] = True
+    return render_template('dashboard.html', user=user[0], tweets=user_tweets, following_tweets=following_tweets)
+
+
 @app.route('/tweet/create', methods=['POST'])
 def create_tweet():
     if len(request.form['content']) > 255:
@@ -127,12 +131,14 @@ def create_tweet():
         return redirect('/dashboard')
     return redirect('/dashboard')
 
+
 @app.route('/tweet/<id>/delete')
 def delete_tweet(id):
     mysql = connectToMySQL('dojo_tweets')
     query = f"DELETE from tweets where id = {id} and user_id = {session['userid']};"
     mysql.query_db(query)
     return redirect('/dashboard')
+
 
 @app.route('/tweet/<id>/like')
 def like_tweet(id):
@@ -144,36 +150,72 @@ def like_tweet(id):
         mysql.query_db(query)
     return redirect('/dashboard')
 
+
+@app.route('/tweet/<id>/edit')
+def edit_tweet(id):
+    edit_tweet = connectToMySQL('dojo_tweets')
+    tweet = edit_tweet.query_db(f"SELECT * from tweets where id = {id} and user_id = {session['userid']}")
+    if tweet:
+        return render_template('edit.html', tweet=tweet[0])
+    return render_template('edit.html', tweet=None)
+
+@app.route('/tweet/<id>/update', methods=['POST'])
+def update_tweet(id):
+    if len(request.form['content']) < 1:
+        flash('Tweet length cannot be 0', 'error')
+    elif len(request.form['content']) > 255:
+        flash('Tweet cannot be longer than 255 characters', 'error')
+    if not '_flashes' in session.keys():
+        if request.form['button'] == 'Update':
+            update_tweet_mysql = connectToMySQL('dojo_tweets')
+            query = f"UPDATE tweets SET content = %(c)s, updated_at = now() WHERE id = {id};"
+            data = {
+                "c": request.form['content']
+            }
+            update_tweet = update_tweet_mysql.query_db(query, data)
+            return redirect('/dashboard')
+        else:
+            return redirect('/dashboard')
+    return redirect(f'/tweet/{id}/edit')
+
+
 @app.route('/tweet/<id>/unlike')
 def unlike_tweet(id):
     check = connectToMySQL('dojo_tweets')
     tweet_liked = check.query_db(f"SELECT * from tweet_likes where tweet_id = {id} and liked_user_id = {session['userid']}")
-    print(tweet_liked)
     if tweet_liked:
         mysql = connectToMySQL('dojo_tweets')
         query = f"DELETE from tweet_likes where id = {tweet_liked[0]['id']};"
         mysql.query_db(query)
     return redirect('/dashboard')
 
-@app.route('/add-friends')
+@app.route('/users')
 def choices():
-    follow_choices = []
-    not_followed = []
-    followed = []
     users_mysql = connectToMySQL('dojo_tweets')
-    users = users_mysql.query_db(f"SELECT users.id, users.first_name, users.last_name, following.primary_user_id as followed_by from users "
-                                 f"LEFT JOIN following on users.id = following.following_user_id "
-                                 f"where users.id != {session['userid']};")
+    users = users_mysql.query_db(f"SELECT users.id, users.first_name, users.last_name, users.email from users where users.id != {session['userid']};")
     for user in users:
-        if user['followed_by'] != session['userid']:
-            follow_choices.append(user)
-        else:
-            followed.append(user['id'])
-    for choice in follow_choices:
-        if choice['id'] not in followed:
-            not_followed.append(choice)
-    print(not_followed)
-    return render_template('add.html', users=not_followed)
+        check_followed_by = connectToMySQL('dojo_tweets')
+        followed_by = check_followed_by.query_db(f"SELECT * from following where primary_user_id = {session['userid']} and following_user_id = {user['id']};")
+        if followed_by:
+            user['followed_by_me'] = True
+    return render_template('users.html', users=users)
+
+
+@app.route('/users/<id>/unfollow')
+def unfollow_user(id):
+    query = f"DELETE FROM following where primary_user_id = {session['userid']} and following_user_id = {id};"
+    unfollow = connectToMySQL('dojo_tweets')
+    unfollow.query_db(query)
+    return redirect('/users')
+
+
+@app.route('/users/<id>/follow')
+def follow_user(id):
+    query = f"INSERT INTO following (primary_user_id, following_user_id) VALUES ({session['userid']}, {id});"
+    follow = connectToMySQL('dojo_tweets')
+    follow.query_db(query)
+    return redirect('/users')
+
 
 @app.route('/add', methods=['POST'])
 def add():

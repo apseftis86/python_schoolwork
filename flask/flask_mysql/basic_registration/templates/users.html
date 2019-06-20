@@ -18,18 +18,29 @@
     </span>
     </h3>
     <div class="p-5">
-      <h3>People to follow:</h3>
-      {% if users | length == 0 %}
-      <p>There are no new people to follow...</p>
-      {% endif %}
-      <form action="add" method="post">
-        {% for user in users %}
-        <label><input type="checkbox" name="follow[]" value="{{user['id']}}">{{user['first_name']}} {{user['last_name']}}</label>
-        {% endfor %}
-        {% if users | length != 0 %}
-        <button class="btn btn-sm btn-primary">Submit</button>
-        {% endif %}
-      </form>
+      <h3>Users: </h3>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <td>{{user['first_name']}} {{user['last_name']}}</td>
+            <td>{{user['email']}}</td>
+            <td>
+              {% if user['followed_by_me'] %}
+              <a href="/users/{{user['id']}}/unfollow">Unfollow</a>
+              {% else %}
+              <a href="/users/{{user['id']}}/follow">Follow</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </body>
 </html>
