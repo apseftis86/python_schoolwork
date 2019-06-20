@@ -1,17 +1,28 @@
-#wrapper {
-    padding: 25px;
-}
-
-.form_container {
-    width: 700px;
-    border: 2px solid black;
-    padding: 25px;
-}
-
-h2 {
-    text-decoration: underline;
+* {
+    font-family: 'Roboto', sans-serif;
 }
 label {
     display: block !important;
     margin: 10px 0;
+}
+.alerts {
+    position: absolute;
+    right: 0
+}
+.alert-error {
+    background-color: red !important;
+}
+.alert-success {
+    background-color: green !important;
+}
+.welcome {
+    font-size: 18px;
+}
+
+.float-right i {
+    vertical-align: middle;
+}
+.user_actions {
+    width: 55%;
+    min-width: 500px;
 }
