@@ -30,11 +30,17 @@ def index():
 
 @app.route('/process-money', methods=['POST'])
 def process_money():
+    money_values = {
+        'farm': [10, 20],
+        'casino': [-50, 50],
+        'house': [2, 5],
+        'cave': [5, 10]
+    }
     if session['over']:
         return redirect('/')
     session['choices'] += 1
     location = request.form['location']
-    processing = random.randint(int(request.form['lowrange']), int(request.form['highrange']))
+    processing = random.randint(money_values[request.form['location']][0], money_values[request.form['location']][1])
     session['gold'] = int(session['gold']) + processing
     if processing < 0:
         action = 'loss'

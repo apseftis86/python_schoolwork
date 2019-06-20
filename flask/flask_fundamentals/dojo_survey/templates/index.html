@@ -11,22 +11,50 @@
       <div class="form_container">
         <h3>Submit a Form</h3>
         <form action='/result' method='post'>
-          <label><b>Name:</b> <input type='text' name='name' class="form-control w-50"></label>
-          <label><b>Location:</b> <input type='text' name='location' class="form-control w-50"></label>
-          <label><b>Level of Coding Knowledge:</b>
-            <input type="radio" name="level" value="novice" class="mx-2">Novice
-            <input type="radio" name="level" value="intermediate" class="mx-2">Intermediate
-            <input type="radio" name="level" value="expert" class="mx-2">Expert
+          <label class="d-block">
+            <b>Name:</b>
+            <input type='text' name='name' class="form-control w-50">
           </label>
-          <label>
+          <label class="d-block">
+            <b>Location:</b>
+            <select name="location" class="form-control w-50">
+              <option value="" autofocus>Choose a Location</option>
+              <option value="San Jose">San Jose</option>
+              <option value="Online">Online</option>
+              <option value="Berkley">Berkley</option>
+            </select>
+          </label>
+          <div>
+            <b>Level of Coding Knowledge:</b>
+            <label>
+              <input type="radio" name="level" value="novice" class="mx-2">Novice
+            </label>
+            <label>
+              <input type="radio" name="level" value="intermediate" class="mx-2">Intermediate
+            </label>
+            <label>
+              <input type="radio" name="level" value="expert" class="mx-2">Expert
+            </label>
+          </div>
+          <div>
             <b>Languages Known:</b>
-            <input type="checkbox" name="known_languages[]" class="mx-2" value="JavaScript">Javascript
-            <input type="checkbox" name="known_languages[]" class="mx-2" value="Python">Python
-            <input type="checkbox" name="known_languages[]" class="mx-2" value="Ruby">Ruby
-            <input type="checkbox" name="known_languages[]" class="mx-2" value="HTML">HTML
-            <input type="checkbox" name="known_languages[]" class="mx-2" value="CSS">CSS
-          </label>
-          <label>
+            <label>
+              <input type="checkbox" name="known_languages[]" class="mx-2" value="JavaScript"/>Javascript
+            </label>
+            <label>
+              <input type="checkbox" name="known_languages[]" class="mx-2" value="Python"/>Python
+            </label>
+            <label>
+              <input type="checkbox" name="known_languages[]" class="mx-2" value="Ruby"/>Ruby
+            </label>
+            <label>
+              <input type="checkbox" name="known_languages[]" class="mx-2" value="HTML"/>HTML
+            </label>
+            <label>
+              <input type="checkbox" name="known_languages[]" class="mx-2" value="CSS"/>CSS
+            </label>
+          </div>
+          <label class="d-block">
             <b>Favorite Language:</b>
             <select name="fave_language" class="form-control w-50">
               <option value="" autofocus>Choose a Language</option>
@@ -37,12 +65,11 @@
               <option value="CSS">CSS</option>
             </select>
           </label>
-          <label>
+          <label class="d-block">
             <b>Comment(optional):</b>
-            <textarea rows="3" name="comment" class="form-control w-75"></textarea></label>
-          <div>
-            <button class="btn btn-primary my-3">Submit</button>
-          </div>
+            <textarea rows="3" name="comment" class="form-control w-75"></textarea>
+          </label>
+          <button class="btn btn-primary">Submit</button>
         </form>
       </div>
     </div>

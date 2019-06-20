@@ -66,9 +66,7 @@ def add_winner():
         "name": request.form['leader_name'],
         "attempts": session['attempts']
     }
-    leader_list = session['leaders']
-    leader_list.append(new_leader)
-    session['leaders'] = leader_list
+    session['leaders'].append(new_leader)
     return redirect('/leaderboard')
 
 
