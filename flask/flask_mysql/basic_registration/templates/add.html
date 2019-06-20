@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+  </head>
+  <body>
+     <h3 class="p-3 bg-dark text-light align-items-center"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets
+    <span class="float-right">
+      <span class="welcome">
+      </span>
+      <a class="text-light" href="/dashboard"><i class="fas fa-home ml-4"></i></a>
+      <a class="text-light" href="/logout"><i class="fas fa-sign-out-alt ml-4"></i></a>
+    </span>
+    </h3>
+    <div class="p-5">
+      <h3>People to follow:</h3>
+      {% if users | length == 0 %}
+      <p>There are no new people to follow...</p>
+      {% endif %}
+      <form action="add" method="post">
+        {% for user in users %}
+        <label><input type="checkbox" name="follow[]" value="{{user['id']}}">{{user['first_name']}} {{user['last_name']}}</label>
+        {% endfor %}
+        {% if users | length != 0 %}
+        <button class="btn btn-sm btn-primary">Submit</button>
+        {% endif %}
+      </form>
+    </div>
+  </body>
+</html>

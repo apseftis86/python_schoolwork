@@ -1,6 +1,9 @@
 * {
     font-family: 'Roboto', sans-serif;
 }
+p {
+    margin: 0 !important;
+}
 label {
     display: block !important;
     margin: 10px 0;

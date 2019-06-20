@@ -43,7 +43,10 @@
           <p class="border p-3 w-75">
             {{tweet['content']}}
             <span class="float-right">
-              <a class="text-danger" href="tweet/{{tweet['id']}}/destroy">
+              <a class="badge badge-warning mr-2" href="tweet/{{tweet['id']}}/edit">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a class="badge badge-danger" href="tweet/{{tweet['id']}}/delete">
                 <i class="fas fa-times"></i>
               </a>
             </span>
@@ -52,13 +55,18 @@
         </div>
         <div class="following">
           <h5>People you are following:</h5>
-          {% for tweet in following_tweets %}
-          <div class="card">
-            <div class="card-header">
-              {{tweet['first_name']}} {{tweet['first_name']}}
-            </div>
-            <div class="card-body">
-              {{tweet['content']}}
+          <a href="/add-friends">Find new people to follow</a>
+          {% for tweet in following_tweets | sort(attribute='created_at', reverse=true) %}
+          <div class="card m-3 shadow-sm">
+             <div class="card-body">
+               <span class="text-primary font-weight-bold">{{tweet['first_name']}} {{tweet['last_name']}}</span>
+               <span>{{tweet['content']}}</span>
+               <p class="text-sm-left font-italic">{{tweet['created_at']}}</p>
+               {% if tweet['liked_by_me'] %}
+               <a class="badge badge-pill badge-danger" href="/tweet/{{tweet['id']}}/unlike"><i class="fas fa-thumbs-down mr-2"></i>{{tweet['likes']}}</a>
+               {% else %}
+               <a class="badge badge-pill badge-primary" href="/tweet/{{tweet['id']}}/like"><i class="fas fa-thumbs-up mr-2"></i>{{tweet['likes']}}</a>
+               {% endif %}
             </div>
           </div>
           {% endfor %}
