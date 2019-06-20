@@ -38,25 +38,12 @@
             <textarea rows="5" class="form-control w-75" name="content"></textarea>
             <button class="btn btn-sm btn-primary my-3">Submit</button>
           </form>
-          <h6>Past Tweets</h6>
-          {% for tweet in tweets %}
-          <p class="border p-3 w-75">
-            {{tweet['content']}}
-            <span class="float-right">
-              <a class="badge badge-warning mr-2" href="tweet/{{tweet['id']}}/edit">
-                <i class="fas fa-edit"></i>
-              </a>
-              <a class="badge badge-danger" href="tweet/{{tweet['id']}}/delete">
-                <i class="fas fa-times"></i>
-              </a>
-            </span>
-          </p>
-          {% endfor %}
         </div>
         <div class="following">
-          <h5>People you are following:</h5>
+          <h5>Tweet Wall:</h5>
           <a href="/users">Find new people to follow</a>
-          {% for tweet in following_tweets | sort(attribute='created_at', reverse=true) %}
+          {% for tweet in tweets | sort(attribute='created_at', reverse=true) %}
+          {% if tweet['followed_by_me'] or tweet['owned_by_me']%}
           <div class="card m-3 shadow-sm">
              <div class="card-body">
                <span class="text-primary font-weight-bold">{{tweet['first_name']}} {{tweet['last_name']}}</span>
@@ -67,7 +54,18 @@
                <a class="badge badge-pill badge-danger" href="/tweet/{{tweet['id']}}/unlike"><i class="fas fa-thumbs-down"></i></a>
                {% endif %}
             </div>
+            {% if tweet['owned_by_me'] %}
+            <div class="card-footer">
+              <form action="tweet/{{tweet['id']}}/edit" class="d-inline">
+                <button class="btn btn-sm btn-warning">Edit</button>
+              </form>
+              <form action="tweet/{{tweet['id']}}/delete" class="d-inline">
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+            {% endif %}
           </div>
+          {% endif %}
           {% endfor %}
         </div>
       </div>
