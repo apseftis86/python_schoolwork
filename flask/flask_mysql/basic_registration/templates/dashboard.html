@@ -41,10 +41,13 @@
         </div>
         <div class="following">
           <h5>Tweet Wall:</h5>
-          <a href="/users">Find new people to follow</a>
+          {% if session['not_following'] %}
+          <a href="/users">You aren't following anyone, click here to find people</a>
+          {% else %}
+          <a href="/users">See all users</a>
+          {% endif %}
           {% for tweet in tweets | sort(attribute='created_at', reverse=true) %}
-          {% if tweet['followed_by_me'] or tweet['owned_by_me']%}
-          <div class="card m-3 shadow-sm">
+          <div class="card my-3 shadow-sm">
              <div class="card-body">
                <span class="text-primary font-weight-bold">{{tweet['first_name']}} {{tweet['last_name']}}</span>
                <span>{{tweet['content']}}</span>
@@ -63,9 +66,8 @@
                 <button class="btn btn-sm btn-danger">Delete</button>
               </form>
             </div>
-            {% endif %}
-          </div>
           {% endif %}
+          </div>
           {% endfor %}
         </div>
       </div>

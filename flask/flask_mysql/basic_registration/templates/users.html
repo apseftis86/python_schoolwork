@@ -26,7 +26,7 @@
           <th>Actions</th>
         </thead>
         <tbody>
-          {% for user in users %}
+          {% for user in users | sort(attribute='last_name') %}
           <tr>
             <td>{{user['first_name']}} {{user['last_name']}}</td>
             <td>{{user['email']}}</td>
