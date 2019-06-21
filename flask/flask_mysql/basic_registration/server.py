@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, flash, session
 from flask_bcrypt import Bcrypt
 from mysqlconnection import connectToMySQL  # import the function that will return an instance of a connection
 import re
+from datetime import date, datetime, timedelta
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -100,6 +101,22 @@ def success():
                                   f"LEFT join tweet_likes on tweet_likes.tweet_id = tweets.id "
                                   f"LEFT join users on users.id = tweets.user_id GROUP BY (tweets.id);")
     for tweet in tweets:
+        created = tweet['created_at']
+        viewed = datetime.now()
+        delta = viewed - created
+        if delta.days < 1:
+            if int(delta.seconds/60/60) > 1:
+                tweet['since_created'] = str(int(delta.seconds/60/60)) + ' hours'
+            elif int(delta.seconds/60/60)== 1:
+                tweet['since_created'] = str(int(delta.seconds/60/60)) + ' hour'
+            else:
+                tweet['since_created'] = str(int(delta.seconds / 60 )) + ' minutes'
+        else:
+            if delta.days == 1:
+                tweet['since_created'] = str(delta.days) + ' day'
+            else:
+                tweet['since_created'] = str(delta.days) + ' days'
+        print(tweet['created_at'])
         for my_liked in my_liked_tweets:
             if tweet['id'] == my_liked['tweet_id']:
                 tweet['liked_by_me'] = True

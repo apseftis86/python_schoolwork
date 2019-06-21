@@ -30,7 +30,7 @@
       {% endif %}
       {% endwith %}
     </div>
-    <div id="wrapper" class="p-3">
+    <div id="wrapper" class="p-4">
       <div class="d-flex justify-content-start">
         <div class="user_actions">
           <h5>Post a Tweet:</h5>
@@ -48,7 +48,7 @@
              <div class="card-body">
                <span class="text-primary font-weight-bold">{{tweet['first_name']}} {{tweet['last_name']}}</span>
                <span>{{tweet['content']}}</span>
-               <p class="text-sm-left font-italic">{{tweet['created_at']}}</p>
+               <p class="text-sm-left font-italic">Created {{tweet['since_created']}} ago</p>
                <a class="badge badge-pill badge-primary" href="/tweet/{{tweet['id']}}/like"><i class="fas fa-thumbs-up mr-2"></i>{{tweet['likes']}}</a>
                {% if tweet['liked_by_me'] %}
                <a class="badge badge-pill badge-danger" href="/tweet/{{tweet['id']}}/unlike"><i class="fas fa-thumbs-down"></i></a>

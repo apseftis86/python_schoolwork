@@ -29,3 +29,13 @@ label {
     width: 55%;
     min-width: 500px;
 }
+form {
+    min-width: 350px;
+    margin: 0 auto;
+}
+img {
+    z-index: -1000;
+    bottom: 50px;
+    min-width: 400px;
+    margin: auto;
+}
