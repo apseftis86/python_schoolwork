@@ -13,6 +13,8 @@
   <body>
   <h3 class="bg-dark text-light p-4">Leader Board</h3>
   <div class="p-3">
+      <!-- I added these so people could not add their name to leader board before their
+      game was over -->
       {% if not session['leader_added'] and session['guessed']%}
       <span>
           <b>Add your name:</b>
