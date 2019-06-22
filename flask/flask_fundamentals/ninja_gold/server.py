@@ -8,6 +8,9 @@ app.secret_key = 'keep it secret, keep it safe'  # set a secret key for security
 @app.route('/')
 def index():
     if 'activities' not in session:
+        # set to an array at the beginning so that you can append later...
+        # just FYI i found if you start a project without this and have stuff in session
+        # and try to go to this it will not work and you have to clear the session data first
         session['activities'] = []
         session['choices'] = 0
         session['over'] = False
