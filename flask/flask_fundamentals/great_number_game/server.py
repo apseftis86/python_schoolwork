@@ -28,6 +28,7 @@ def set_difficulty():
     return redirect('/')
 """
 
+
 @app.route('/guess', methods=['POST'])
 def guessing():
     session['attempts'] += 1
