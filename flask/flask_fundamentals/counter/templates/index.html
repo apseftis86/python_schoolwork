@@ -11,15 +11,20 @@
     <title>Document</title>
   </head>
   <body class="text-center">
-    <h3 class="jumbotron jumbotron-fluid p-5">We have been visited {{visits}} times!</h3>
+    <h3 class="jumbotron jumbotron-fluid p-5">We have been visited {{counter}} times!</h3>
     <div class="p-3">
       <h4>Counter: {{counter}}</h4>
+      <form action="/">
+        <button class="btn btn-primary">Add One!</button>
+      </form>
       <form action="/update_two">
         <button class="btn btn-success">Add Two!</button>
       </form>
       <form action="/destroy_session">
         <button class="btn btn-danger">Reset Counter</button>
       </form>
+      <!-- extra
+      {#
       <hr class="my-5">
       <div class="p-3">
         <h4>Custom Incrementer:</h4>
@@ -28,6 +33,7 @@
           <button class="btn btn-primary">Submit</button>
         </form>
       </div>
+      #} -->
     </div>
   </body>
 </html>
