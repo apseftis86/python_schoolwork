@@ -5,10 +5,12 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <!-- my css file -->
     <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+      <!-- for bootstrap css... do use always -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Ninja Gold </title>
   </head>
   <body>
   <h1 class="p-3 bg-dark text-light text-center">
@@ -17,10 +19,11 @@
       <img src="{{ url_for('static', filename='img/coins.png') }}">
   </h1>
   <div class="text-center mb-3">
+      <!-- sensei bonus stuff commenting out with HTML and Jinja Comments...
         {# this is for the sensei bonus  part
     <h5>Earn 200 gold in 15 moves to win...</h5>
     <h5>If you do not reach your goal or go lower than -100 gold... you lose.</h5>
-     #}
+     #} -->
         <span id="bank">
           <img src="{{ url_for('static', filename='img/rich.png') }}">
           <b>Gold: {{gold}}</b>
