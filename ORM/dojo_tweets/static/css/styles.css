@@ -1,0 +1,41 @@
+* {
+    font-family: 'Roboto', sans-serif;
+}
+p {
+    margin: 0 !important;
+}
+label {
+    display: block !important;
+    margin: 10px 0;
+}
+.alerts {
+    position: absolute;
+    right: 0
+}
+.alert-error {
+    background-color: red !important;
+}
+.alert-success {
+    background-color: green !important;
+}
+.welcome {
+    font-size: 18px;
+}
+
+.float-right i {
+    vertical-align: middle;
+}
+.user_actions {
+    width: 55%;
+    min-width: 500px;
+}
+form {
+    min-width: 350px;
+    margin: 0 auto;
+}
+img {
+    z-index: -1000;
+    bottom: 50px;
+    min-width: 400px;
+    margin: auto;
+}

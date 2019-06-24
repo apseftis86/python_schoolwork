@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+  </head>
+  <body>
+     <h3 class="p-3 bg-dark text-light align-items-center"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets
+    <span class="float-right">
+      <span class="welcome">
+      </span>
+      <a class="text-light" href="/dashboard"><i class="fas fa-home ml-4"></i></a>
+      <a class="text-light" href="/logout"><i class="fas fa-sign-out-alt ml-4"></i></a>
+    </span>
+    </h3>
+    <div class="p-5">
+      <h3>Users: </h3>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          {% for user in users | sort(attribute='last_name') %}
+          {% if user['id'] != session['userid'] %}
+          <tr>
+            <td>{{user['first_name']}} {{user['last_name']}}</td>
+            <td>{{user['email']}}</td>
+            <td>
+              {% if user['followed_by_me'] %}
+              <a href="/users/{{user['id']}}/unfollow">Unfollow</a>
+              {% else %}
+              <a href="/users/{{user['id']}}/follow">Follow</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

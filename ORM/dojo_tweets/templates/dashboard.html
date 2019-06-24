@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+  </head>
+  <body>
+    <h3 class="p-3 bg-dark text-light align-items-center"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets
+    <span class="float-right">
+      <span class="welcome">
+        {% if session['first_login'] %}
+        Welcome, {{user['first_name']}}!
+        {% else %}
+        Welcome back, {{user['first_name']}}
+        {% endif %}
+      </span>
+      <a class="text-light" href="/logout"><i class="fas fa-sign-out-alt ml-4"></i></a>
+    </span>
+    </h3>
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{category}} text-light" role="alert">{{message}}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    <div id="wrapper" class="p-4">
+      <div class="d-flex justify-content-start">
+        <div class="user_actions">
+          <h5>Post a Tweet:</h5>
+          <form action="tweet/create" method="post">
+            <textarea rows="5" class="form-control w-75" name="content"></textarea>
+            <button class="btn btn-sm btn-primary my-3">Submit</button>
+          </form>
+        </div>
+        <div class="following">
+          <h5>Tweet Wall:</h5>
+          {% if user['none_following'] %}
+          <a href="/users">You aren't following anyone, click here to find people</a>
+          {% else %}
+          <a href="/users">See all users</a>
+          {% endif %}
+          {% for tweet in tweets | sort(attribute='created_at', reverse=true) %}
+          {% for followed in user['users_this_person_follows'] %}
+          {% if tweet['user_id'] == followed['id'] or tweet['user_id'] == session['userid'] %}
+          <div class="card my-3 shadow-sm">
+             <div class="card-body">
+               <span class="text-primary font-weight-bold">{{tweet['user_info']['first_name']}} {{tweet['user_info']['last_name']}}</span>
+               <span>{{tweet['content']}}</span>
+               <p class="text-sm-left font-italic">Created {{tweet['since_created']}} ago</p>
+               <a class="badge badge-pill badge-primary" href="/tweet/{{tweet['id']}}/like"><i class="fas fa-thumbs-up mr-2"></i>{{tweet['likes']}}</a>
+               {% for liked in user['tweets_this_user_likes'] %}
+               {% if liked['id'] == tweet['id'] %}
+               <a class="badge badge-pill badge-danger" href="/tweet/{{tweet['id']}}/unlike"><i class="fas fa-thumbs-down"></i></a>
+               {% endif %}
+               {% endfor %}
+            </div>
+            {% if tweet['user_id'] == user['id'] %}
+            <div class="card-footer">
+              <form action="tweet/{{tweet['id']}}/edit" class="d-inline">
+                <button class="btn btn-sm btn-warning">Edit</button>
+              </form>
+              <form action="tweet/{{tweet['id']}}/delete" class="d-inline">
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+          {% endif %}
+          </div>
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

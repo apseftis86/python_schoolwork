@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Dojo Tweets</title>
+  </head>
+  <body>
+    <h3 class="p-3 bg-dark text-light"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets</h3>
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{category}} text-light" role="alert">{{message}}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    <div class="p-5">
+      <div class="row">
+        <div class="col col-lg-8">
+          <div class="row">
+            <form action='login' method='post' class="col col-6">
+              <h4>Login</h4>
+              <label>
+                <b>Email:</b>
+                <input type='text' name='email' class="form-control">
+              </label>
+              <label>
+                <b>Password:</b>
+                <input type='password' name='password' class="form-control">
+              </label>
+              <button class="btn btn-primary my-3">Login</button>
+           </form>
+           <form action='register' method='post' class="col col-6" autocomplete="off">
+             <h4>Register</h4>
+              <label>
+                <b>First Name:</b>
+                <input type='text' name='first_name' class="form-control">
+              </label>
+              <label>
+                <b>Last Name:</b>
+                <input type='text' name='last_name' class="form-control">
+              </label>
+             <label>
+                <b>Email:</b>
+                <input type='text' name='email' class="form-control">
+              </label>
+              <label>
+                <b>Password:</b>
+                <input type='password' name='password' class="form-control">
+              </label>
+              <label>
+                <b>Confirm Password:</b>
+                <input type='password' name='confirm_password' class="form-control">
+              </label>
+              <div>
+                <button class="btn btn-success my-3">Register</button>
+              </div>
+           </form>
+          </div>
+        </div>
+        <img class="col col-4" src="{{ url_for('static', filename='img/ninja_bird.png') }}" alt="https://dribbble.com/shots/1833784-Ninja-Bird">
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  </body>
+</html>

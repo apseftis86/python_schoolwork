@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+  </head>
+  <body>
+    <h3 class="p-3 bg-dark text-light align-items-center"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets
+    <span class="float-right">
+      <a class="text-light" href="/dashboard"><i class="fas fa-home ml-4"></i></a>
+      <a class="text-light" href="/logout"><i class="fas fa-sign-out-alt ml-4"></i></a>
+    </span>
+    </h3>
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{category}} text-light" role="alert">{{message}}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    <div id="wrapper" class="p-3">
+      <div class="d-flex justify-content-start">
+        <div class="user_actions">
+          {% if tweet %}
+          <h5>Edit Tweet:</h5>
+          <form action="/tweet/{{tweet['id']}}/update" method="post">
+            <textarea rows="5" class="form-control w-75 my-3" name="content">{{tweet['content']}}</textarea>
+            <input type="submit" name="button" class="btn btn-sm btn-primary" value="Update">
+            <input type="submit" name="button" class="btn btn-sm btn-danger" value="Cancel">
+          </form>
+          {% else %}
+          <p class="text-danger">Cannot edit a tweet that does not belong to you...</p>
+          <form action="/dashboard">
+            <input type="submit" class="btn btn-sm btn-primary mt-3" value="Return">
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
