@@ -9,14 +9,29 @@
     <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
   </head>
   <body>
-     <h3 class="p-3 bg-dark text-light align-items-center"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets
-    <span class="float-right">
-      <span class="welcome">
-      </span>
-      <a class="text-light" href="/dashboard"><i class="fas fa-home ml-4"></i></a>
-      <a class="text-light" href="/logout"><i class="fas fa-sign-out-alt ml-4"></i></a>
+     <nav class="navbar navbar-dark bg-dark  navbar-expand-lg ">
+      <a class="navbar-brand text-light" href="/"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets</a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">My Profile</a>
+        </li>
+      </ul>
+      <span class="float-right text-light">
+        <span class="welcome">
+          {% if session['first_login'] %}
+          Welcome, {{session['user']['first_name']}}!
+          {% else %}
+          Welcome back, {{session['user']['first_name']}}
+          {% endif %}
+        </span>
+        <a class="text-light" href="/logout">
+          <i class="fas fa-sign-out-alt mx-4"></i>
+        </a>
     </span>
-    </h3>
+    </nav>
     <div class="p-5">
       <h3>Users: </h3>
       <table class="table table-bordered table-striped">

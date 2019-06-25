@@ -42,22 +42,13 @@
       {% endwith %}
     </div>
     <div id="wrapper" class="p-3">
-      <div class="d-flex justify-content-start">
-        <div class="user_actions">
-          {% if tweet %}
-          <h5>Edit Tweet:</h5>
-          <form action="/tweet/{{tweet['id']}}/update" method="post">
-            <textarea rows="5" class="form-control w-75 my-3" name="content">{{tweet['content']}}</textarea>
-            <input type="submit" name="button" class="btn btn-sm btn-primary" value="Update">
-            <input type="submit" name="button" class="btn btn-sm btn-danger" value="Cancel">
-          </form>
-          {% else %}
-          <p class="text-danger">Cannot edit a tweet that does not belong to you...</p>
-          <form action="/dashboard">
-            <input type="submit" class="btn btn-sm btn-primary mt-3" value="Return">
-          </form>
-          {% endif %}
-        </div>
+      <h2>Upload new File</h2>
+      <hr>
+      <div class="d-inline-block border p-4">
+        <form method=post enctype=multipart/form-data>
+          <input type=file name=file class="d-block">
+          <button class="btn btn-sm btn-primary my-3">Upload</button>
+        </form>
       </div>
     </div>
   </body>

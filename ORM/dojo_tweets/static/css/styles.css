@@ -22,7 +22,7 @@ label {
     font-size: 18px;
 }
 
-.float-right i {
+.float-right  {
     vertical-align: middle;
 }
 .user_actions {
@@ -33,9 +33,17 @@ form {
     min-width: 350px;
     margin: 0 auto;
 }
-img {
+img #bird {
     z-index: -1000;
     bottom: 50px;
     min-width: 400px;
     margin: auto;
+}
+textarea[name=content] {
+    resize: none;
+}
+
+#avatar {
+    width: 200px !important;
+    max-height: 200px;
 }

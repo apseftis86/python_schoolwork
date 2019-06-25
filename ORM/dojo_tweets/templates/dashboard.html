@@ -9,18 +9,29 @@
     <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
   </head>
   <body>
-    <h3 class="p-3 bg-dark text-light align-items-center"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets
-    <span class="float-right">
-      <span class="welcome">
-        {% if session['first_login'] %}
-        Welcome, {{user['first_name']}}!
-        {% else %}
-        Welcome back, {{user['first_name']}}
-        {% endif %}
-      </span>
-      <a class="text-light" href="/logout"><i class="fas fa-sign-out-alt ml-4"></i></a>
+    <nav class="navbar navbar-dark bg-dark  navbar-expand-lg ">
+      <a class="navbar-brand text-light" href="/"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets</a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">My Profile</a>
+        </li>
+      </ul>
+      <span class="float-right text-light">
+        <span class="welcome">
+          {% if session['first_login'] %}
+          Welcome, {{user['first_name']}}!
+          {% else %}
+          Welcome back, {{user['first_name']}}
+          {% endif %}
+        </span>
+        <a class="text-light" href="/logout">
+          <i class="fas fa-sign-out-alt mx-4"></i>
+        </a>
     </span>
-    </h3>
+    </nav>
     <div class="alerts">
       {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -35,7 +46,8 @@
         <div class="user_actions">
           <h5>Post a Tweet:</h5>
           <form action="tweet/create" method="post">
-            <textarea rows="5" class="form-control w-75" name="content"></textarea>
+            <textarea id="content" rows="3" class="form-control w-75" name="content" onkeyup="textCounter(this,'counter',255);"></textarea>
+            <p class="mt-1"><span id="counter">0</span>/255 <span id="warning" class="text-danger"></span></p>
             <button class="btn btn-sm btn-primary my-3">Submit</button>
           </form>
         </div>
@@ -43,12 +55,8 @@
           <h5>Tweet Wall:</h5>
           {% if user['none_following'] %}
           <a href="/users">You aren't following anyone, click here to find people</a>
-          {% else %}
-          <a href="/users">See all users</a>
           {% endif %}
-          {% for tweet in tweets | sort(attribute='created_at', reverse=true) %}
-          {% for followed in user['users_this_person_follows'] %}
-          {% if tweet['user_id'] == followed['id'] or tweet['user_id'] == session['userid'] %}
+          {% for tweet in tweets %}
           <div class="card my-3 shadow-sm">
              <div class="card-body">
                <span class="text-primary font-weight-bold">{{tweet['user_info']['first_name']}} {{tweet['user_info']['last_name']}}</span>
@@ -72,11 +80,24 @@
             </div>
           {% endif %}
           </div>
-          {% endif %}
-          {% endfor %}
           {% endfor %}
         </div>
       </div>
     </div>
+    <script>
+      function textCounter(field,field2)
+      {
+          let warning = document.getElementById('warning');
+          let counter = document.getElementById(field2);
+          counter.innerHTML = field.value.length;
+          if (field.value.length > 255) {
+              counter.style.color = 'red';
+              warning.innerHTML = ' tweet too long';
+          } else {
+              warning.innerHTML = '';
+              counter.style.color = 'black';
+          }
+      }
+    </script>
   </body>
 </html>

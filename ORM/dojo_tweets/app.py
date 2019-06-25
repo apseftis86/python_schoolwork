@@ -2,13 +2,19 @@ from flask import Flask, render_template, request, redirect, flash, session, jso
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import date, datetime, timedelta
-from sqlalchemy.sql import func
 from flask_bcrypt import Bcrypt
+from sqlalchemy.sql import func                         # ADDED THIS LINE FOR DEFAULT TIMESTAMP
+from werkzeug.utils import secure_filename
+import os
 import re
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
+UPLOAD_FOLDER = 'static/img/'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # configurations to tell our app about the database we'll be connecting to
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///dojo_tweets.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,7 +26,7 @@ app.secret_key = 'keep it secret, keep it safe'  # set a secret key for security
 
 # our index route will handle rendering our form
 name_validator = re.compile(r'^[a-zA-Z]+$')
-password_validator = re.compile(r'^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$')
+# password_validator = re.compile(r'^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$')
 email_validator = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 likes_table = db.Table('likes',
               db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
@@ -37,8 +43,9 @@ class User(db.Model):
     last_name = db.Column(db.String(45))
     email = db.Column(db.String(45))
     password = db.Column(db.String(100))
-    created_at = db.Column(db.DateTime, server_default=func.now())    # notice the extra import statement above
-    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    last_login = db.Column(db.DateTime(timezone=True), default=func.now())
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())    # notice the extra import statement above
+    updated_at = db.Column(db.DateTime(timezone=True), default=func.now(), onupdate=func.now())
     tweets_this_user_likes = db.relationship('Tweet', secondary=likes_table)
     users_this_person_follows = db.relationship('User',
         secondary = followers_table,
@@ -47,15 +54,32 @@ class User(db.Model):
         backref = db.backref('followers', lazy = 'dynamic'),
         lazy = 'dynamic')
 
+    def followed_tweets(self):
+        followed = Tweet.query.join(
+            followers_table, (followers_table.c.following_id == Tweet.user_id)).filter(
+            followers_table.c.follower_id == self.id)
+        own = Tweet.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Tweet.created_at.desc())
+
 class Tweet(db.Model):
     __tablename__ = "tweets"
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, server_default=func.now())    # notice the extra import statement above
-    updated_at = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    viewed_at = db.Column(db.DateTime(timezone=True), default=func.now())    # notice the extra import statement above
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())    # notice the extra import statement above
+    updated_at = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     user_info = db.relationship('User', foreign_keys=[user_id], backref="user_tweets")
     users_who_like_this_tweet = db.relationship('User', secondary=likes_table)
+
+class Avatar(db.Model):
+    __tablename__ = "avatars"
+    id = db.Column(db.Integer, primary_key=True)
+    file_path = db.Column(db.String(45))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_info = db.relationship('User', foreign_keys=[user_id], backref="user_avatar")
+    created_at = db.Column(db.DateTime(timezone=True), default=func.now())    # notice the extra import statement above
+    updated_at = db.Column(db.DateTime(timezone=True), default=func.now(), onupdate=func.now())
 
 @app.route('/')
 def index():
@@ -79,8 +103,8 @@ def register_user():
     if len(request.form['password']) > 1:
         if request.form['password'] != request.form['confirm_password']:
             flash('Passwords must match', 'error')
-        if not password_validator.match(request.form['password']):
-            flash('Password not strong enough', 'error')
+        # if not password_validator.match(request.form['password']):
+            # flash('Password not strong enough', 'error')
     else:
         flash('Password must not be blank', 'error')
     if len(request.form['email']) > 1:
@@ -111,13 +135,18 @@ def login():
     if len(request.form['password']) < 1:
         flash('Password field blank', 'error')
     if not '_flashes' in session.keys():
-        data = {
-            "e": request.form['email']
-        }
-        result = User.query.filter_by(email=data['e']).first()
+        result = User.query.filter_by(email=request.form['email']).first()
         if bcrypt.check_password_hash(result.password, request.form['password']):
             # if we get True after checking the password, we may put the user id in session
+            result.last_login = func.now()
+            db.session.commit()
             session['userid'] = result.id
+            session['user'] = {
+                'first_name': result.first_name,
+                'last_name': result.last_name,
+                'email': result.email,
+                'last_login': result.last_login - timedelta(hours=4),
+            }
             # never render on a post, always redirect!
             return redirect('/dashboard')
         flash('You could not be logged in', 'error')
@@ -130,15 +159,15 @@ def success():
     if 'userid' not in session:
         return redirect('/')
     user = User.query.get(int(session['userid']))
+    tweets = user.followed_tweets().all()
     following = 0
-    for followed in user.users_this_person_follows:
+    for follow_user in user.users_this_person_follows:
         following += 1
     if following == 0:
         user.none_following = True
-    tweets = Tweet.query.all()
     for tweet in tweets:
         tweet.likes = len(tweet.users_who_like_this_tweet)
-        created = tweet.created_at
+        created = tweet.created_at - timedelta(hours=4)
         viewed = datetime.now()
         delta = viewed - created
         if delta.days < 1:
@@ -155,6 +184,13 @@ def success():
                 tweet.since_created = str(delta.days) + ' days'
     return render_template('dashboard.html', user=user, tweets=tweets)
 
+
+@app.route('/profile')
+def get_profile():
+    user = User.query.get(int(session['userid']))
+    return render_template('profile.html', user=user)
+
+
 @app.route('/tweet/create', methods=['POST'])
 def create_tweet():
     if 'userid' not in session:
@@ -164,10 +200,9 @@ def create_tweet():
     if len(request.form['content']) < 1:
         flash('Tweet cannot be empty', 'error')
     if not '_flashes' in session.keys():
-        if 'userid' in session:
-            new_tweet = Tweet(content=request.form['content'], user_id=session['userid'])
-            db.session.add(new_tweet)
-            db.session.commit()
+        new_tweet = Tweet(content=request.form['content'], user_id=session['userid'])
+        db.session.add(new_tweet)
+        db.session.commit()
         return redirect('/dashboard')
     return redirect('/dashboard')
 
@@ -216,6 +251,7 @@ def edit_tweet(id):
 @app.route('/tweet/<id>/update', methods=['POST'])
 def update_tweet(id):
     if 'userid' not in session:
+        flash('You are not logged in...', 'error')
         return redirect('/')
     if len(request.form['content']) < 1:
         flash('Tweet length cannot be 0', 'error')
@@ -229,7 +265,7 @@ def update_tweet(id):
             return redirect('/dashboard')
         else:
             return redirect('/dashboard')
-    return redirect(f'/tweet/{id}/edit')
+    return redirect('/tweet/{}/edit'.format(id))
 
 @app.route('/users')
 def choices():
@@ -264,6 +300,39 @@ def follow_user(id):
     db.session.commit()
     return redirect('/users')
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            user = User.query.get(session['userid'])
+            filename = '{}_'.format(user.id) + secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            if user.user_avatar:
+                avatar = Avatar.query.get(user.user_avatar[0].id)
+                delete_file = secure_filename(avatar.file_path)
+                os.remove(os.path.join(app.config['UPLOAD_FOLDER'], delete_file))
+                avatar.file_path = filename
+                db.session.commit()
+            else:
+                new_file = Avatar(file_path='{}'.format(filename), user_id=user.id)
+                db.session.add(new_file)
+                db.session.commit()
+            return redirect('/profile')
+    return render_template('uploads.html')
 
 @app.route('/logout')
 def logout():
