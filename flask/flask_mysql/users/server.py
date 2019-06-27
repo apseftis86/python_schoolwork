@@ -12,7 +12,7 @@ def get_users():
 @app.route('/users/<id>')
 def show_user(id):
     mysql = connectToMySQL("users_db")
-    user = mysql.query_db(f"SELECT * FROM users WHERE id = {id};")
+    user = mysql.query_db("SELECT * FROM users WHERE id = {};".format(id))
     return render_template('user.html', user=user[0])
 
 @app.route('/users/new', methods=['GET', 'POST'])
@@ -27,7 +27,7 @@ def add_user():
             "d": request.form['description'],
         }
         new_user = mysql.query_db(query, data)
-        return redirect(f'/users/{new_user}')
+        return redirect('/users/{}'.format(new_user))
     else:
         return render_template('edit.html', user=None)
 
@@ -44,7 +44,7 @@ def edit_user(id):
            "d" : request.form['description'],
        }
        mysql.query_db(query, data)
-       return redirect(f'/users/{user_id}')
+       return redirect('/users/{}'.format(user_id))
    else:
        user = mysql.query_db("SELECT * FROM users WHERE id = " + user_id + ";")
        return render_template('edit.html', user=user[0])

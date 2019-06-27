@@ -16,9 +16,9 @@ def index():
 @app.route('/submissions')
 def submissions():
     mysql = connectToMySQL("users_db")
-    users = mysql.query_db(f'SELECT users.name, users.comment, dojo_locations.name as location, languages.name as language from users '
-                                   f'LEFT JOIN dojo_locations on dojo_locations.id = users.dojo_location_id '
-                                   f'LEFT JOIN languages on languages.id = users.language_id;')
+    users = mysql.query_db('SELECT users.name, users.comment, dojo_locations.name as location, languages.name as language from users '
+                                   'LEFT JOIN dojo_locations on dojo_locations.id = users.dojo_location_id '
+                                   'LEFT JOIN languages on languages.id = users.language_id;')
     return render_template('submissions.html', users=users)
 
 @app.route('/add', methods=['POST'])
@@ -36,9 +36,9 @@ def create_user():
             "l": request.form['language_id'],
         }
         user_added = connectToMySQL('users_db').query_db(query, data)
-        get_user = connectToMySQL('users_db').query_db(f'SELECT users.name, users.comment, dojo_locations.name as location, languages.name as language from users '
-                                   f'LEFT JOIN dojo_locations on dojo_locations.id = users.dojo_location_id '
-                                   f'LEFT JOIN languages on languages.id = users.language_id WHERE users.id = {user_added};')
+        get_user = connectToMySQL('users_db').query_db('SELECT users.name, users.comment, dojo_locations.name as location, languages.name as language from users '
+                                   'LEFT JOIN dojo_locations on dojo_locations.id = users.dojo_location_id '
+                                   'LEFT JOIN languages on languages.id = users.language_id WHERE users.id = {};'.format(user_added))
         session['user'] = get_user[0]
         return redirect('/result')
     else:
