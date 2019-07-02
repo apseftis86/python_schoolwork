@@ -27,7 +27,7 @@ def add_user():
             "d": request.form['description'],
         }
         new_user = mysql.query_db(query, data)
-        return redirect(f'/users/{new_user}')
+        return redirect(f'/users')
     else:
         return render_template('edit.html', user=None)
 
