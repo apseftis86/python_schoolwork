@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-dark bg-dark  navbar-expand-lg ">
+      <a class="navbar-brand text-light" href="/"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets</a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">My Profile</a>
+        </li>
+      </ul>
+      <span class="float-right text-light">
+        <span class="welcome">
+          {% if session['first_login'] %}
+          Welcome, {{user['first_name']}}!
+          {% else %}
+          Welcome back, {{user['first_name']}}
+          {% endif %}
+        </span>
+        <a class="text-light" href="/logout">
+          <i class="fas fa-sign-out-alt mx-4"></i>
+        </a>
+    </span>
+    </nav>
+    <div class="alerts">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{category}} text-light" role="alert">{{message}}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+    </div>
+    <div id="wrapper" class="p-4">
+      <div class="d-flex justify-content-start">
+        <div class="user_actions">
+          <h5>Post a Tweet:</h5>
+          <form action="tweet/create" method="post">
+            <textarea id="content" rows="3" class="form-control w-75" name="content" onkeyup="textCounter(this,'counter',255);"></textarea>
+            <p class="mt-1"><span id="counter">0</span>/255 <span id="warning" class="text-danger"></span></p>
+            <button class="btn btn-sm btn-primary my-3">Submit</button>
+          </form>
+        </div>
+        <div class="following">
+          <h5>Tweet Wall:</h5>
+          {% if user['none_following'] %}
+          <a href="/users">You aren't following anyone, click here to find people</a>
+          {% endif %}
+          {% for tweet in tweets %}
+          <div class="card my-3 shadow-sm">
+             <div class="card-body">
+               <span class="text-primary font-weight-bold">{{tweet['user_info']['first_name']}} {{tweet['user_info']['last_name']}}</span>
+               <span>{{tweet['content']}}</span>
+               <p class="text-sm-left font-italic">Created {{tweet['since_created']}} ago</p>
+               <a class="badge badge-pill badge-primary" href="/tweet/{{tweet['id']}}/like"><i class="fas fa-thumbs-up mr-2"></i>{{tweet['likes']}}</a>
+               {% for liked in user['tweets_this_user_likes'] %}
+               {% if liked['id'] == tweet['id'] %}
+               <a class="badge badge-pill badge-danger" href="/tweet/{{tweet['id']}}/unlike"><i class="fas fa-thumbs-down"></i></a>
+               {% endif %}
+               {% endfor %}
+            </div>
+            {% if tweet['user_id'] == user['id'] %}
+            <div class="card-footer">
+              <form action="tweet/{{tweet['id']}}/edit" class="d-inline">
+                <button class="btn btn-sm btn-warning">Edit</button>
+              </form>
+              <form action="tweet/{{tweet['id']}}/delete" class="d-inline">
+                <button class="btn btn-sm btn-danger">Delete</button>
+              </form>
+            </div>
+          {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <script>
+      function textCounter(field,field2)
+      {
+          let warning = document.getElementById('warning');
+          let counter = document.getElementById(field2);
+          counter.innerHTML = field.value.length;
+          if (field.value.length > 255) {
+              counter.style.color = 'red';
+              warning.innerHTML = ' tweet too long';
+          } else {
+              warning.innerHTML = '';
+              counter.style.color = 'black';
+          }
+      }
+    </script>
+  </body>
+</html>

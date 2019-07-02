@@ -6,15 +6,15 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    mysql = connectToMySQL("pet_database") # this holds the name to my database
+    mysql = connectToMySQL("pet_database")  # this holds the name to my database
     pets = mysql.query_db("SELECT * FROM pets;")
     print(pets)
-    return render_template("index.html", all_pets = pets)
+    return render_template("index.html", all_pets=pets)
 
 
 @app.route('/add-pet', methods=['POST'])
 def add_new_pet():
-    db = connectToMySQL("pet_database") # this holds the name to my database
+    db = connectToMySQL("pet_database")  # this holds the name to my database
     query = "INSERT INTO pets (name, type, created_at) VALUES (%(n)s, %(t)s, now());"
     data = {
         "n": request.form['name'],
@@ -23,5 +23,7 @@ def add_new_pet():
     new_pet_id = db.query_db(query, data)
     print(new_pet_id)
     return redirect('/')
+
+
 if __name__ == "__main__":
     app.run(debug=True)

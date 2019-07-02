@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/fcf0fdd3e4.js"></script>
+  </head>
+  <body>
+     <nav class="navbar navbar-dark bg-dark  navbar-expand-lg ">
+      <a class="navbar-brand text-light" href="/"><i class="fas fa-user-ninja mr-3"></i>Dojo Tweets</a>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/users">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/profile">My Profile</a>
+        </li>
+      </ul>
+      <span class="float-right text-light">
+        <span class="welcome">
+          {% if session['first_login'] %}
+          Welcome, {{session['user']['first_name']}}!
+          {% else %}
+          Welcome back, {{session['user']['first_name']}}
+          {% endif %}
+        </span>
+        <a class="text-light" href="/logout">
+          <i class="fas fa-sign-out-alt mx-4"></i>
+        </a>
+    </span>
+    </nav>
+    <div class="p-5">
+      <h3>Users: </h3>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </thead>
+        <tbody>
+          {% for user in users | sort(attribute='last_name') %}
+          {% if user['id'] != session['userid'] %}
+          <tr>
+            <td>{{user['first_name']}} {{user['last_name']}}</td>
+            <td>{{user['email']}}</td>
+            <td>
+              {% if user['followed_by_me'] %}
+              <a href="/users/{{user['id']}}/unfollow">Unfollow</a>
+              {% else %}
+              <a href="/users/{{user['id']}}/follow">Follow</a>
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
