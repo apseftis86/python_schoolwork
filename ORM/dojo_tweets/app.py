@@ -26,15 +26,19 @@ app.secret_key = 'keep it secret, keep it safe'  # set a secret key for security
 
 # our index route will handle rendering our form
 name_validator = re.compile(r'^[a-zA-Z]+$')
-# password_validator = re.compile(r'^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$')
+password_validator = \
+    re.compile(r'^(?:(?=.*[a-z])(?:(?=.*[A-Z])(?=.*[\d\W])|(?=.*\W)(?=.*\d))|(?=.*\W)(?=.*[A-Z])(?=.*\d)).{8,}$')
 email_validator = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-likes_table = db.Table('likes',
-              db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-              db.Column('tweet_id', db.Integer, db.ForeignKey('tweets.id'), primary_key=True))
+likes_table = \
+    db.Table('likes',
+             db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+             db.Column('tweet_id', db.Integer, db.ForeignKey('tweets.id'), primary_key=True))
 
-followers_table =  db.Table('followers',
-              db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-              db.Column('following_id', db.Integer, db.ForeignKey('users.id'), primary_key=True))
+followers_table =  \
+    db.Table('followers',
+             db.Column('follower_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+             db.Column('following_id', db.Integer, db.ForeignKey('users.id'), primary_key=True))
+
 
 class User(db.Model):
     __tablename__ = "users"    # optional
@@ -48,11 +52,11 @@ class User(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), default=func.now(), onupdate=func.now())
     tweets_this_user_likes = db.relationship('Tweet', secondary=likes_table)
     users_this_person_follows = db.relationship('User',
-        secondary = followers_table,
-        primaryjoin = (followers_table.c.follower_id == id),
-        secondaryjoin = (followers_table.c.following_id == id),
-        backref = db.backref('followers', lazy = 'dynamic'),
-        lazy = 'dynamic')
+                                                secondary=followers_table,
+                                                primaryjoin=(followers_table.c.follower_id == id),
+                                                secondaryjoin=(followers_table.c.following_id == id),
+                                                backref=db.backref('followers', lazy='dynamic'),
+                                                lazy='dynamic')
 
     def followed_tweets(self):
         followed = Tweet.query.join(
@@ -60,6 +64,7 @@ class User(db.Model):
             followers_table.c.follower_id == self.id)
         own = Tweet.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Tweet.created_at.desc())
+
 
 class Tweet(db.Model):
     __tablename__ = "tweets"
@@ -72,6 +77,7 @@ class Tweet(db.Model):
     user_info = db.relationship('User', foreign_keys=[user_id], backref="user_tweets")
     users_who_like_this_tweet = db.relationship('User', secondary=likes_table)
 
+
 class Avatar(db.Model):
     __tablename__ = "avatars"
     id = db.Column(db.Integer, primary_key=True)
@@ -80,6 +86,7 @@ class Avatar(db.Model):
     user_info = db.relationship('User', foreign_keys=[user_id], backref="user_avatar")
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())    # notice the extra import statement above
     updated_at = db.Column(db.DateTime(timezone=True), default=func.now(), onupdate=func.now())
+
 
 @app.route('/')
 def index():
@@ -103,8 +110,8 @@ def register_user():
     if len(request.form['password']) > 1:
         if request.form['password'] != request.form['confirm_password']:
             flash('Passwords must match', 'error')
-        # if not password_validator.match(request.form['password']):
-            # flash('Password not strong enough', 'error')
+        if not password_validator.match(request.form['password']):
+            flash('Password not strong enough', 'error')
     else:
         flash('Password must not be blank', 'error')
     if len(request.form['email']) > 1:
@@ -173,7 +180,7 @@ def success():
         if delta.days < 1:
             if int(delta.seconds/60/60) > 1:
                 tweet.since_created = str(int(delta.seconds/60/60)) + ' hours'
-            elif int(delta.seconds/60/60)== 1:
+            elif int(delta.seconds/60/60) == 1:
                 tweet.since_created = str(int(delta.seconds/60/60)) + ' hour'
             else:
                 tweet.since_created = str(int(delta.seconds / 60 )) + ' minutes'
@@ -248,6 +255,7 @@ def edit_tweet(id):
         return render_template('edit.html', tweet=tweet)
     return render_template('edit.html', tweet=None)
 
+
 @app.route('/tweet/<id>/update', methods=['POST'])
 def update_tweet(id):
     if 'userid' not in session:
@@ -266,6 +274,7 @@ def update_tweet(id):
         else:
             return redirect('/dashboard')
     return redirect('/tweet/{}/edit'.format(id))
+
 
 @app.route('/users')
 def choices():
@@ -300,9 +309,11 @@ def follow_user(id):
     db.session.commit()
     return redirect('/users')
 
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
@@ -334,11 +345,11 @@ def upload_file():
             return redirect('/profile')
     return render_template('uploads.html')
 
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
-
 
 
 if __name__ == "__main__":
